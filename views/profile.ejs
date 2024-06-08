@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-info {
+            margin-bottom: 20px;
+        }
+        .profile-info label {
+            font-weight: bold;
+        }
+        .profile-info p {
+            margin-bottom: 10px;
+        }
+        .btn-container {
+            text-align: center;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Profile</h1>
+        <div class="profile-info">
+            <label for="firstName">First Name:</label>
+            <p><%= user.firstName %></p>
+        </div>
+        <div class="profile-info">
+            <label for="lastName">Last Name:</label>
+            <p><%= user.lastName %></p>
+        </div>
+        <div class="profile-info">
+            <label for="gender">Gender:</label>
+            <p><%= user.gender %></p>
+        </div>
+        <div class="profile-info">
+            <label for="dob">Date of Birth:</label>
+            <p><%= user.dob %></p>
+        </div>
+        <div class="profile-info">
+            <label for="mobile">Mobile Number:</label>
+            <p><%= user.mobile %></p>
+        </div>
+        <div class="profile-info">
+            <label for="email">Email:</label>
+            <p><%= user.email %></p>
+        </div>
+        <div class="profile-info">
+            <label for="bloodGroup">Blood Group:</label>
+            <p><%= user.bloodGroup %></p>
+        </div>
+        <div class="profile-info">
+            <label for="emergencyContact">Emergency Contact:</label>
+            <p><%= user.emergencyContact %></p>
+        </div>
+        <div class="btn-container">
+            <button class="btn" onclick="window.location.href='/home'">Back to Home</button>
+        </div>
+    </div>
+</body>
+</html>
