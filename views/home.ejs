@@ -116,10 +116,19 @@
         .feature p {
             color: #555;
         }
+        
+        /* Logout button styling */
+        .logout-container {
+            text-align: right;
+            margin-top: -60px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="logout-container">
+            <button onclick="window.location.href='/logout'">Logout</button>
+        </div>
         <img src="https://i.etsystatic.com/26658960/r/il/e884b9/3814251269/il_fullxfull.3814251269_aqz2.jpg" alt="Medical Records Banner" class="banner">
         <h2>Access and Manage Your Medical Records</h2>
         <p>Keep your personal health data safe, secure, and easily accessible at any time.</p>
@@ -132,24 +141,10 @@
                 </a>
             </div>
             <div class="feature">
-                <h3>Treatment Plans</h3>
-                <p>Keep track of your treatment plans and medical advice.</p>
-            </div>
-            <div class="feature">
-                <h3>Secure Storage</h3>
-                <p>Your data is encrypted and stored securely.</p>
-            </div>
-            <div class="feature">
-                <h3>Easy Uploads</h3>
-                <p>Upload your medical documents, reports, and bills effortlessly.</p>
-            </div>
-            <div class="feature">
-                <h3>Emergency Access</h3>
-                <p>Grant access to your records in case of emergencies.</p>
-            </div>
-            <div class="feature">
-                <h3>Manage Appointments</h3>
-                <p>Keep track of your medical appointments and consultations.</p>
+                <a href="/file" class="button-link">
+                    <h3>View Records</h3>
+                    <p>View your prescriptions, medical reports and other additional documents</p>
+                </a>
             </div>
         </div>
     </div>

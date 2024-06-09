@@ -3,12 +3,24 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
 const mysql = require('mysql2');
+const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 
 const app = express();
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(cookieParser());
+app.use(session({
+  secret: 'your_secret_key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false }
+}));
 app.set('view engine', 'ejs');
+
 // Create MySQL connection
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -28,114 +40,147 @@ connection.connect((err) => {
 // File upload setup
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-      cb(null, 'uploads/');
+    cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
-      cb(null, `${Date.now()}-${file.originalname}`);
+    const fieldName = file.fieldname; // The fieldname such as prescriptions, medical_report, additional_documents
+    cb(null, `${req.session.userId}-${fieldName}-${Date.now()}-${file.originalname}`);
   }
 });
-
 const upload = multer({ storage: storage });
 
+// Middleware to check if the user is authenticated
+function isAuthenticated(req, res, next) {
+  if (req.session.userId) {
+    next();
+  } else {
+    res.redirect('/login');
+  }
+}
 
 // Routes
 app.get('/', (req, res) => {
     res.redirect('/index');
 });
 
-
-
 // Routes for index Page
-
-app.get('/index', (req,res) => {
-  res.render('index')
+app.get('/index', (req, res) => {
+  res.render('index');
 });
 
+// Routes for registration page
+app.get('/createprofile', (req, res) => {
+  res.render('createprofile');
+});
 
-// Routes for create profile page
+app.post('/createprofile', async (req, res) => {
+  const { firstName, lastName, gender, dob, mobile, email, bloodGroup, emergencyContact, password } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const profileData = { firstName, lastName, gender, dob, mobile, email, bloodGroup, emergencyContact, password: hashedPassword };
 
-app.get('/createprofile',(req,res) =>{
-  res.render('createprofile')
-})
-
-app.post('/createprofile', (req, res) => {
-  const profileData = req.body;
-  console.log(typeof(profileData))
-
-  // Insert the profile data into the database
-  connection.query('INSERT INTO Profile SET ?', profileData, (error, results, fields) => {
+  connection.query('INSERT INTO Profile SET ?', profileData, (error, results) => {
       if (error) {
           console.error('Error inserting profile data:', error);
           res.status(500).send('Error inserting profile data');
           return;
       }
-      userId = results.insertId;
-      console.log('Profile data inserted successfully');
-      res.redirect('/home')
-      //console.log(results)
+      res.redirect('/login');
   });
 });
 
-app.get('/home', (req,res) =>{
+// Routes for login page
+app.get('/login', (req, res) => {
+  res.render('login', { error: null }); // Pass error as null initially
+});
+
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  connection.query('SELECT * FROM Profile WHERE email = ?', [email], async (error, results) => {
+    if (error) {
+      console.error('Error fetching user:', error);
+      res.status(500).send('Error logging in');
+      return;
+    }
+    if (results.length === 0 || !(await bcrypt.compare(password, results[0].password))) {
+      res.status(401).send('Invalid email or password');
+      return;
+    }
+    req.session.userId = results[0].id;
+    res.redirect('/home');
+  });
+});
+
+// Routes for home page
+app.get('/home', isAuthenticated, (req, res) => {
   res.render('home');
-})
+});
 
-app.get('/profile', (req, res) => {
-
-  // Fetch user details from the database
-  connection.query('SELECT * FROM Profile WHERE id = ?', userId, (error, results, fields) => {
-      if (error) {
-          console.error('Error fetching user details:', error);
-          res.status(500).send('Error fetching user details');
-          return;
-      }
-
-      if (results.length === 0) {
-          // If no user found with the provided userId, handle it accordingly (e.g., render an error page)
-          res.status(404).send('User not found');
-          return;
-      }
-
-      // Render the profile page with user details
-      res.render('profile', { user: results[0] });
+// Routes for profile page
+app.get('/profile', isAuthenticated, (req, res) => {
+  connection.query('SELECT * FROM Profile WHERE id = ?', [req.session.userId], (error, results) => {
+    if (error) {
+      console.error('Error fetching user details:', error);
+      res.status(500).send('Error fetching user details');
+      return;
+    }
+    if (results.length === 0) {
+      res.status(404).send('User not found');
+      return;
+    }
+    res.render('profile', { user: results[0] });
   });
 });
 
-app.get('/form', (req,res) =>{
-  res.render('form')
-})
+// Routes for form page
+app.get('/form', isAuthenticated, (req, res) => {
+  res.render('form');
+});
 
-app.post('/form', upload.fields([
+app.post('/form', isAuthenticated, upload.fields([
   { name: 'prescriptions', maxCount: 1 },
   { name: 'medical_report', maxCount: 1 },
   { name: 'additional_documents', maxCount: 1 }
 ]), (req, res) => {
-  console.log('req.body:', req.body);
-  console.log('req.files:', req.files);
-
-  const {consultation_date, hospital_name, doctor_name, doctor_specialisation, next_consultation_date } = req.body;
+  const { consultation_date, hospital_name, doctor_name, doctor_specialisation, next_consultation_date } = req.body;
   const prescriptions = req.files['prescriptions'] ? req.files['prescriptions'][0].path : null;
   const medical_report = req.files['medical_report'] ? req.files['medical_report'][0].path : null;
   const additional_documents = req.files['additional_documents'] ? req.files['additional_documents'][0].path : null;
 
   const sql = 'INSERT INTO consultation_records (user_id, consultation_date, hospital_name, doctor_name, doctor_specialisation, prescriptions, medical_report, next_consultation_date, additional_documents) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-  const values = [userId, consultation_date, hospital_name, doctor_name, doctor_specialisation, prescriptions, medical_report, next_consultation_date, additional_documents];
+  const values = [req.session.userId, consultation_date, hospital_name, doctor_name, doctor_specialisation, prescriptions, medical_report, next_consultation_date, additional_documents];
 
   connection.query(sql, values, (err, result) => {
-      if (err) {
-          console.error('Error inserting data:', err.stack);
-          res.status(500).send('Error submitting form.');
-          return;
-      }
-      res.render('success')
+    if (err) {
+      console.error('Error inserting data:', err.stack);
+      res.status(500).send('Error submitting form.');
+      return;
+    }
+    res.render('success');
   });
 });
 
+// Routes for file page
+app.get('/file', isAuthenticated, (req, res) => {
+  const sql = 'SELECT * FROM consultation_records WHERE user_id = ?';
+  connection.query(sql, [req.session.userId], (error, results) => {
+    if (error) {
+      console.error('Error fetching user files:', error);
+      res.status(500).send('Error fetching user files');
+      return;
+    }
+    res.render('file', { records: results });
+  });
+});
+
+// Logout route
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/login');
+});
 
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-

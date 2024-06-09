@@ -1,3 +1,5 @@
+create DATABASE medical
+use medical
 CREATE TABLE Profile (
     id INT AUTO_INCREMENT PRIMARY KEY,
     firstName VARCHAR(50) NOT NULL,
@@ -9,6 +11,7 @@ CREATE TABLE Profile (
     bloodGroup VARCHAR(5) NOT NULL,
     emergencyContact VARCHAR(10) NOT NULL
 );
+ALTER TABLE Profile ADD COLUMN password VARCHAR(255) NOT NULL;
 
 CREATE TABLE consultation_records (
     id INT AUTO_INCREMENT PRIMARY KEY,

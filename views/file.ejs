@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Files</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Files</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Consultation Date</th>
+                <th>Next Consultation Date</th>
+                <th>Doctor Name</th>
+                <th>Prescription File</th>
+                <th>Medical Report</th>
+                <th>Additional Documents</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% records.forEach(record => { %>
+                <tr>
+                    <td><%= record.consultation_date %></td>
+                    <td><%= record.next_consultation_date %></td>
+                    <td><%= record.doctor_name %></td>
+                    <td>
+                        <% if (record.prescriptions) { %>
+                            <a href="<%= record.prescriptions %>" target="_blank">Download</a>
+                        <% } %>
+                    </td>
+                    <td>
+                        <% if (record.medical_report) { %>
+                            <a href="<%= record.medical_report %>" target="_blank">Download</a>
+                        <% } %>
+                    </td>
+                    <td>
+                        <% if (record.additional_documents) { %>
+                            <a href="<%= record.additional_documents %>" target="_blank">Download</a>
+                        <% } %>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+</html>

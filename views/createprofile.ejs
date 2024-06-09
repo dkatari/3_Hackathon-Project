@@ -55,7 +55,7 @@
         }
         .note {
             font-size: 0.875em;
-            color: red; /* Changed to red */
+            color: red;
         }
     </style>
 </head>
@@ -87,7 +87,7 @@
                     <td><input type="date" id="dob" name="dob" required></td>
                 </tr>
                 <tr>
-                    <td><label for="mobile">Mobile Number(India +91):</label></td>
+                    <td><label for="mobile">Mobile Number (India +91):</label></td>
                     <td><input type="tel" id="mobile" name="mobile" required pattern="[6-9][0-9]{9}"></td>
                 </tr>
                 <tr>
@@ -116,6 +116,14 @@
                 </tr>
                 <tr>
                     <td colspan="2" class="note">In case of emergency, calls and messages are sent to this number.</td>
+                </tr>
+                <tr>
+                    <td><label for="password">Password:</label></td>
+                    <td><input type="password" id="password" name="password" required></td>
+                </tr>
+                <tr>
+                    <td><label for="confirmPassword">Confirm Password:</label></td>
+                    <td><input type="password" id="confirmPassword" name="confirmPassword" required></td>
                 </tr>
             </table>
             <button type="submit">CREATE PROFILE</button>
@@ -154,6 +162,12 @@
             }
             if (form.mobile.value === form.emergencyContact.value) {
                 errorMessage += 'Mobile Number and Emergency Contact Number cannot be the same.<br>';
+            }
+            if (!form.password.value) {
+                errorMessage += 'Password is required.<br>';
+            }
+            if (form.password.value !== form.confirmPassword.value) {
+                errorMessage += 'Passwords do not match.<br>';
             }
 
             if (errorMessage) {
