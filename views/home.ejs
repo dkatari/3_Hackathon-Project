@@ -6,14 +6,7 @@
     <title>Medical Records Management</title>
     <style>
         /* Reset some basic elements for consistency across browsers */
-        body,
-        h1,
-        h2,
-        h3,
-        p,
-        ul,
-        li,
-        a {
+        body, h1, h2, h3, p, ul, li, a {
             margin: 0;
             padding: 0;
             list-style: none;
@@ -25,6 +18,11 @@
         body {
             background-color: #f5f5f5;
             color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensure full height of viewport */
         }
 
         /* Header styling */
@@ -36,51 +34,79 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        /* Container styling */
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-            text-align: center;
-        }
-
-        /* Banner image styling */
         .banner {
-            width: 10%;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 80px; /* Adjust width as needed */
             height: auto;
             border-radius: 10px;
         }
 
+        .container-header {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between; /* Align items evenly */
+            align-items: center; /* Center vertically */
+        }
+
         /* Main heading */
-        h1,
-        h2 {
+        h1 {
             margin: 20px 0;
-            color: #5cb85c; /* Changed to green */
+            color: #fff; /* White color for heading */
+            font-size: 32px; /* Larger font size */
+            text-transform: uppercase; /* Uppercase text */
+            flex: 1; /* Take up remaining space */
+            text-align: left; /* Align text to the left */
         }
 
-        /* Paragraph styling */
-        p {
-            margin-bottom: 20px;
-            line-height: 1.6;
-            color: #666;
+        /* Navigation styling */
+        nav {
+            flex: 1; /* Take up remaining space */
+            text-align: right; /* Align text to the right */
         }
 
-        /* Button styling */
-        button {
-            display: inline-block;
-            padding: 15px 30px;
-            margin-top: 20px;
-            background-color: #5cb85c; /* Changed to green */
-            color: white;
-            border: none;
-            border-radius: 5px;
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            text-align: right; /* Align text to the right */
+        }
+
+        nav ul li {
+            display: inline;
+            margin-left: 15px;
+        }
+
+        nav ul li:first-child {
+            margin-left: 0; /* Remove margin from the first child */
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
             font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            margin-right: 15px;
+            text-transform: uppercase; /* Uppercase text */
+            padding: 10px 20px; /* Padding for button-like appearance */
+            border-radius: 5px; /* Rounded corners */
+            transition: background-color 0.3s; /* Smooth background color transition */
         }
 
-        button:hover {
+        nav a:hover {
             background-color: #4cae4c; /* Darker green on hover */
+        }
+
+        /* Main container styling */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto; /* Adjust margin for spacing */
+            padding: 0 20px;
+            text-align: center;
+            flex: 1; /* Take up remaining vertical space */
         }
 
         /* Features section styling */
@@ -94,13 +120,15 @@
 
         /* Individual feature card styling */
         .feature {
-            background: white;
+            background: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
+            margin-bottom: 50px;
             width: calc(33% - 40px);
             box-sizing: border-box;
             transition: transform 0.3s, box-shadow 0.3s;
+            text-align: left; /* Align text to the left */
         }
 
         .feature:hover {
@@ -111,28 +139,48 @@
         .feature h3 {
             margin-bottom: 15px;
             color: #5cb85c; /* Changed to green */
+            font-size: 20px; /* Larger font size */
         }
 
         .feature p {
             color: #555;
         }
-        
-        /* Logout button styling */
-        .logout-container {
-            text-align: right;
-            margin-top: -60px;
+
+        /* Footer styling */
+        .footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .footer p {
+            margin: 0;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logout-container">
-            <button onclick="window.location.href='/logout'">Logout</button>
+    <header>
+        <div class="container-header">
+            <h1>Medfile Manager</h1>
+            <img src="https://i.etsystatic.com/26658960/r/il/e884b9/3814251269/il_fullxfull.3814251269_aqz2.jpg" alt="Medical Records Banner" class="banner">
+            <nav>
+                <ul>
+                    <li><a href="/home" class="button-link">Home</a></li>
+                    <li><a href="/profile" class="button-link">Profile</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                </ul>
+            </nav>
         </div>
-        <img src="https://i.etsystatic.com/26658960/r/il/e884b9/3814251269/il_fullxfull.3814251269_aqz2.jpg" alt="Medical Records Banner" class="banner">
-        <h2>Access and Manage Your Medical Records</h2>
+    </header>
+    <br><br><br><br>
+    <div class="container">
+        <h2 style="color: #5cb85c;font-size: 34px;">Welcome to Medfile Manager</h2>
+        <br><br>
+        <h2>Access and Manage Your Medical Records</h2><br>
         <p>Keep your personal health data safe, secure, and easily accessible at any time.</p>
-        <button onclick="window.location.href='/profile'">PROFILE</button>
+        <br><br>
         <div class="features">
             <div class="feature">
                 <a href="/form" class="button-link">
@@ -148,5 +196,9 @@
             </div>
         </div>
     </div>
+    <div class="footer">
+        <p>&copy; 2024 Medical Records Management. All rights reserved.</p>
+    </div>
+    
 </body>
 </html>

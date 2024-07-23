@@ -41,13 +41,13 @@
             font-size: 16px;
             cursor: pointer;
             border: none;
-            background-color: #007bff;
+            background-color: #5cb85c;
             color: white;
             border-radius: 5px;
             margin-top: 10px;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #5cb85c;
         }
         .error {
             color: red;
@@ -57,9 +57,90 @@
             font-size: 0.875em;
             color: red;
         }
+        .footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .footer p {
+            margin: 0;
+        }
+        .container-header {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between; /* Align items evenly */
+            align-items: center; /* Center vertically */
+        }
+        header {
+            background-color: #5cb85c; /* Changed to green */
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .banner {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 80px; /* Adjust width as needed */
+            height: auto;
+            border-radius: 10px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            text-align: right; /* Align text to the right */
+        }
+
+        nav ul li {
+            display: inline;
+            margin-left: 15px;
+        }
+
+        nav ul li:first-child {
+            margin-left: 0; /* Remove margin from the first child */
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            margin-right: 15px;
+            text-transform: uppercase; /* Uppercase text */
+            padding: 10px 20px; /* Padding for button-like appearance */
+            border-radius: 5px; /* Rounded corners */
+            transition: background-color 0.3s; /* Smooth background color transition */
+        }
+
+        nav a:hover {
+            background-color: #4cae4c; /* Darker green on hover */
+        }
+
     </style>
 </head>
+
 <body>
+    <header>
+        <div class="container-header">
+            <h1>Medfile Manager</h1>
+            <img  src="https://i.etsystatic.com/26658960/r/il/e884b9/3814251269/il_fullxfull.3814251269_aqz2.jpg" alt="Medical Records Banner" class="banner">
+            <nav>
+                <ul>
+                    <li><a href="/home" class="button-link">Home</a></li>
+                    <li><a href="/profile" class="button-link">Profile</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
     <div class="container">
         <form method="post" action="/createprofile" id="profileForm">
             <table>
@@ -176,5 +257,9 @@
             }
         });
     </script>
+<div class="footer">
+    <p>&copy; 2024 Medical Records Management. All rights reserved.</p>
+</div>
+
 </body>
 </html>
