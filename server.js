@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
 const app = express();
+
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
@@ -23,18 +24,19 @@ app.set('view engine', 'ejs');
 
 // Create MySQL connection
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'mysql',
-    database: 'medical'
+  host: 'localhost',
+  user: 'root',
+  password: 'mysql',
+  database: 'medical'
 });
+
 // Connect to MySQL
 connection.connect((err) => {
-    if (err) {
-        console.error('Error connecting to database:', err);
-        return;
-    }
-    console.log('Connected to database');
+  if (err) {
+    console.error('Error connecting to database:', err);
+    return;
+  }
+  console.log('Connected to database');
 });
 
 // File upload setup
@@ -60,12 +62,12 @@ function isAuthenticated(req, res, next) {
 
 // Routes
 app.get('/', (req, res) => {
-    res.redirect('/index');
+  res.redirect('/index');
 });
 
 // Routes for index Page
 app.get('/index', (req, res) => {
-  res.render('index');
+  res.render('index', { error: null });
 });
 
 // Routes for registration page
@@ -79,31 +81,35 @@ app.post('/createprofile', async (req, res) => {
   const profileData = { firstName, lastName, gender, dob, mobile, email, bloodGroup, emergencyContact, password: hashedPassword };
 
   connection.query('INSERT INTO Profile SET ?', profileData, (error, results) => {
-      if (error) {
-          console.error('Error inserting profile data:', error);
-          res.status(500).send('Error inserting profile data');
-          return;
-      }
-      res.redirect('/login');
+    if (error) {
+      console.error('Error inserting profile data:', error);
+      res.status(500).send('Error inserting profile data');
+      return;
+    }
+    res.redirect('/index');
   });
 });
 
 // Routes for login page
-app.get('/login', (req, res) => {
-  res.render('login', { error: null }); // Pass error as null initially
+app.get('/index', (req, res) => {
+  res.render('index', { error: null });
 });
 
-app.post('/login', (req, res) => {
+app.post('/index', (req, res) => {
   const { email, password } = req.body;
 
   connection.query('SELECT * FROM Profile WHERE email = ?', [email], async (error, results) => {
     if (error) {
       console.error('Error fetching user:', error);
-      res.status(500).send('Error logging in');
+      res.render('index', { errorMessage: 'Error logging in' });
       return;
     }
-    if (results.length === 0 || !(await bcrypt.compare(password, results[0].password))) {
-      res.status(401).send('Invalid email or password');
+    if (results.length === 0) {
+      res.render('index', { errorMessage: 'Account doesn\'t exist. Please create one.' });
+      return;
+    }
+    if (!(await bcrypt.compare(password, results[0].password))) {
+      res.render('index', { errorMessage: 'Invalid password' });
       return;
     }
     req.session.userId = results[0].id;
@@ -147,8 +153,13 @@ app.post('/form', isAuthenticated, upload.fields([
   const medical_report = req.files['medical_report'] ? req.files['medical_report'][0].path : null;
   const additional_documents = req.files['additional_documents'] ? req.files['additional_documents'][0].path : null;
 
+  if (!consultation_date || !hospital_name || !doctor_name || !doctor_specialisation || !prescriptions || !medical_report) {
+    res.status(400).send('All mandatory fields must be filled.');
+    return;
+  }
+
   const sql = 'INSERT INTO consultation_records (user_id, consultation_date, hospital_name, doctor_name, doctor_specialisation, prescriptions, medical_report, next_consultation_date, additional_documents) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-  const values = [req.session.userId, consultation_date, hospital_name, doctor_name, doctor_specialisation, prescriptions, medical_report, next_consultation_date, additional_documents];
+  const values = [req.session.userId, consultation_date, hospital_name, doctor_name, doctor_specialisation, prescriptions, medical_report, next_consultation_date || null, additional_documents || null];
 
   connection.query(sql, values, (err, result) => {
     if (err) {
@@ -173,10 +184,55 @@ app.get('/file', isAuthenticated, (req, res) => {
   });
 });
 
+app.post('/profile', isAuthenticated, (req, res) => {
+  const { firstName, lastName, gender, dob, mobile, email, bloodGroup, emergencyContact } = req.body;
+  console.log(dob);
+  // Validate and sanitize input data if necessary
+
+  // Check if all required fields are present
+  if (!firstName || !lastName || !gender || !dob || !mobile || !email || !bloodGroup || !emergencyContact) {
+    return res.status(400).send('All fields are required.');
+  }
+
+  // Ensure the dob is in the correct format
+  const formattedDob = new Date(dob).toISOString().split('T')[0];
+
+  const sql = `
+    UPDATE Profile 
+    SET firstName = ?, lastName = ?, gender = ?, dob = ?, mobile = ?, email = ?, bloodGroup = ?, emergencyContact = ?
+    WHERE id = ?
+  `;
+  const values = [firstName, lastName, gender, formattedDob, mobile, email, bloodGroup, emergencyContact, req.session.userId];
+
+  connection.query(sql, values, (error, results) => {
+    if (error) {
+      console.error('Error updating profile data:', error);
+      return res.status(500).send('Error updating profile data');
+    }
+
+    // Redirect to the profile page to reflect changes
+    res.redirect('/profile');
+  });
+});
+
+app.post('/delete-file/:id', isAuthenticated, (req, res) => {
+  const recordId = req.params.id;
+
+  const sql = 'DELETE FROM consultation_records WHERE id = ?';
+  connection.query(sql, [recordId], (error, results) => {
+      if (error) {
+          console.error('Error deleting record:', error);
+          res.status(500).send('Error deleting record');
+          return;
+      }
+      res.redirect('/file'); // Redirect to the page displaying the files
+  });
+});
+
 // Logout route
 app.get('/logout', (req, res) => {
   req.session.destroy();
-  res.redirect('/login');
+  res.redirect('/index');
 });
 
 // Start server

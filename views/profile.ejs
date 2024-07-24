@@ -25,35 +25,32 @@
             margin: 0;
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Ensure full height of viewport */
+            min-height: 100vh;
         }
 
         /* Header styling */
         header {
-            background-color: #5cb85c; /* Changed to green */
+            background-color: #5cb85c;
             color: white;
             padding: 20px 0;
             text-align: center;
             font-family: Arial, sans-serif;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: 100%;
+            position: relative; /* Ensure header elements are positioned correctly */
         }
 
         .container-header {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
-            text-align: center;
             display: flex;
-            justify-content: space-between; /* Align items evenly */
-            align-items: center; /* Center vertically */
+            justify-content: space-between;
+            align-items: center;
         }
 
         .banner {
-            position: absolute;
-            top: 10px;
-            left: 20px;
-            width: 80px; /* Adjust width as needed */
+            width: 80px;
             height: auto;
             border-radius: 10px;
         }
@@ -62,16 +59,15 @@
             list-style-type: none;
             margin: 0;
             padding: 0;
-            text-align: right; /* Align text to the right */
+            display: flex;
         }
 
         nav ul li {
-            display: inline;
             margin-left: 15px;
         }
 
         nav ul li:first-child {
-            margin-left: 0; /* Remove margin from the first child */
+            margin-left: 0;
         }
 
         nav a {
@@ -79,25 +75,25 @@
             text-decoration: none;
             font-size: 16px;
             margin-right: 15px;
-            text-transform: uppercase; /* Uppercase text */
-            padding: 10px 20px; /* Padding for button-like appearance */
-            border-radius: 5px; /* Rounded corners */
-            transition: background-color 0.3s; /* Smooth background color transition */
+            text-transform: uppercase;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
         }
 
         nav a:hover {
-            background-color: #4cae4c; /* Darker green on hover */
+            background-color: #4cae4c;
         }
 
         /* Main container */
         .container {
             max-width: 600px;
-            margin: 20px auto; /* Center the container */
+            margin: 20px auto;
             background-color: #fff;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            flex: 1; /* Take remaining space */
+            flex: 1;
         }
 
         h1 {
@@ -110,21 +106,28 @@
             border: 1px solid #ccc;
             padding: 10px;
             border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between label and value */
         }
 
         .profile-info label {
             font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
+            flex: 0 0 150px;
         }
 
         .profile-info p {
-            margin-bottom: 0;
+            margin: 0;
+            flex: 1;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
         }
 
         .btn-container {
             text-align: center;
-            margin-top: 20px; /* Adjust top margin for spacing */
+            margin-top: 20px;
         }
 
         .btn {
@@ -148,40 +151,81 @@
             text-align: center;
             padding: 20px;
             width: 100%;
-            margin-top: auto; /* Push footer to the bottom */
+            margin-top: auto;
         }
 
         .footer p {
             margin: 0;
         }
-        /* Profile info box styling */
-.profile-info {
-    display: flex;
-    align-items: center;
-}
 
-.profile-info label {
-    font-weight: bold;
-    flex: 0 0 150px; /* Fixed width for labels */
-}
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
 
-.profile-info p {
-    margin-bottom: 10px;
-    flex: 1; /* Take remaining space */
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-}
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 5px;
+        }
 
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-control:focus {
+            border-color: #5cb85c;
+            outline: none;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.875em;
+            margin-top: 5px;
+        }
     </style>
 </head>
 
 <body>
     <header>
         <div class="container-header">
-            <h1>MEDLIFE MANAGER</h1>
             <img src="https://i.etsystatic.com/26658960/r/il/e884b9/3814251269/il_fullxfull.3814251269_aqz2.jpg" alt="Medical Records Banner" class="banner">
+            <h1>MEDLIFE MANAGER</h1>
+            
             <nav>
                 <ul>
                     <li><a href="/home" class="button-link">Home</a></li>
@@ -227,13 +271,161 @@
             <p><%= user.emergencyContact %></p>
         </div>
         <div class="btn-container">
+            <button class="btn" onclick="document.getElementById('updateModal').style.display='block'">Update Profile</button>
             <button class="btn" onclick="window.location.href='/home'">Back to Home</button>
+        </div>
+    </div>
+
+    <!-- Update Profile Modal -->
+    <div id="updateModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('updateModal').style.display='none'">&times;</span>
+            <h2>Update Profile</h2>
+            <form id="updateProfileForm" method="post" action="/profile">
+                <div class="form-group">
+                    <label for="updateFirstName">First Name:</label>
+                    <input type="text" id="updateFirstName" name="firstName" class="form-control" value="<%= user.firstName %>" required minlength="2" maxlength="30">
+                    <div class="error-message" id="firstNameError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="updateLastName">Last Name:</label>
+                    <input type="text" id="updateLastName" name="lastName" class="form-control" value="<%= user.lastName %>" required minlength="2" maxlength="30">
+                    <div class="error-message" id="lastNameError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="updateGender">Gender:</label>
+                    <select id="updateGender" name="gender" class="form-control" required>
+                        <option value="male" <%= user.gender === 'male' ? 'selected' : '' %>>Male</option>
+                        <option value="female" <%= user.gender === 'female' ? 'selected' : '' %>>Female</option>
+                        <option value="other" <%= user.gender === 'other' ? 'selected' : '' %>>Other</option>
+                    </select>
+                    <div class="error-message" id="genderError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="updateDob">Date of Birth:</label>
+                    <input type="date" id="updateDob" name="dob" class="form-control" value="<%= user.dob %>" required>
+                    <div class="error-message" id="dobError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="updateMobile">Mobile Number:</label>
+                    <input type="tel" id="updateMobile" name="mobile" class="form-control" value="<%= user.mobile %>" required pattern="[0-9]{10}" title="Please enter a 10-digit mobile number">
+                    <div class="error-message" id="mobileError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="updateEmail">Email:</label>
+                    <input type="email" id="updateEmail" name="email" class="form-control" value="<%= user.email %>" required>
+                    <div class="error-message" id="emailError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="updateBloodGroup">Blood Group:</label>
+                    <select id="updateBloodGroup" name="bloodGroup" class="form-control" required>
+                        <option value="A+" <%= user.bloodGroup === 'A+' ? 'selected' : '' %>>A+</option>
+                        <option value="A-" <%= user.bloodGroup === 'A-' ? 'selected' : '' %>>A-</option>
+                        <option value="B+" <%= user.bloodGroup === 'B+' ? 'selected' : '' %>>B+</option>
+                        <option value="B-" <%= user.bloodGroup === 'B-' ? 'selected' : '' %>>B-</option>
+                        <option value="AB+" <%= user.bloodGroup === 'AB+' ? 'selected' : '' %>>AB+</option>
+                        <option value="AB-" <%= user.bloodGroup === 'AB-' ? 'selected' : '' %>>AB-</option>
+                        <option value="O+" <%= user.bloodGroup === 'O+' ? 'selected' : '' %>>O+</option>
+                        <option value="O-" <%= user.bloodGroup === 'O-' ? 'selected' : '' %>>O-</option>
+                    </select>
+                    <div class="error-message" id="bloodGroupError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="updateEmergencyContact">Emergency Contact:</label>
+                    <input type="tel" id="updateEmergencyContact" name="emergencyContact" class="form-control" value="<%= user.emergencyContact %>" required pattern="[0-9]{10}" title="Please enter a 10-digit emergency contact number">
+                    <div class="error-message" id="emergencyContactError"></div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn">Save Changes</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <div class="footer">
         <p>&copy; 2024 Medical Records Management. All rights reserved.</p>
     </div>
+
+    <script>
+        // Close modal if user clicks outside of it
+        window.onclick = function(event) {
+            var modal = document.getElementById('updateModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Form validation
+        document.getElementById('updateProfileForm').addEventListener('submit', function(event) {
+            let isValid = true;
+            
+            // Clear previous error messages
+            document.querySelectorAll('.error-message').forEach(function(el) {
+                el.textContent = '';
+            });
+
+            // Validate First Name
+            const firstName = document.getElementById('updateFirstName').value;
+            if (firstName.length < 2 || firstName.length > 30) {
+                document.getElementById('firstNameError').textContent = 'First name must be between 2 and 30 characters.';
+                isValid = false;
+            }
+
+            // Validate Last Name
+            const lastName = document.getElementById('updateLastName').value;
+            if (lastName.length < 2 || lastName.length > 30) {
+                document.getElementById('lastNameError').textContent = 'Last name must be between 2 and 30 characters.';
+                isValid = false;
+            }
+
+            // Validate Gender
+            const gender = document.getElementById('updateGender').value;
+            if (!gender) {
+                document.getElementById('genderError').textContent = 'Gender is required.';
+                isValid = false;
+            }
+
+            // Validate Date of Birth
+            const dob = document.getElementById('updateDob').value;
+            if (!dob) {
+                document.getElementById('dobError').textContent = 'Date of birth is required.';
+                isValid = false;
+            }
+
+            // Validate Mobile Number
+            const mobile = document.getElementById('updateMobile').value;
+            const mobilePattern = /^[0-9]{10}$/;
+            if (!mobilePattern.test(mobile)) {
+                document.getElementById('mobileError').textContent = 'Mobile number must be a 10-digit number.';
+                isValid = false;
+            }
+
+            // Validate Email
+            const email = document.getElementById('updateEmail').value;
+            if (!email) {
+                document.getElementById('emailError').textContent = 'Email is required.';
+                isValid = false;
+            }
+
+            // Validate Blood Group
+            const bloodGroup = document.getElementById('updateBloodGroup').value;
+            if (!bloodGroup) {
+                document.getElementById('bloodGroupError').textContent = 'Blood group is required.';
+                isValid = false;
+            }
+
+            // Validate Emergency Contact
+            const emergencyContact = document.getElementById('updateEmergencyContact').value;
+            if (!mobilePattern.test(emergencyContact)) {
+                document.getElementById('emergencyContactError').textContent = 'Emergency contact must be a 10-digit number.';
+                isValid = false;
+            }
+
+            if (!isValid) {
+                event.preventDefault(); // Prevent form submission if validation fails
+            }
+        });
+    </script>
 </body>
 
 </html>
